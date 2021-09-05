@@ -47,34 +47,34 @@ function addToCart(event) {
   if (!event.target.matches('.btn')) return
   if ( !cartItems.length || !cartItems.some( item => item.id === event.target.dataset.id)){
     axios.get(MENU_URL)
-      .then(response => {
-        let index = response.data.findIndex(item => item.id === event.target.dataset.id)
-        cartItems.push({
-          id: response.data[index].id,
-          name: response.data[index].name,
-          price: response.data[index].price,
-          quantity: 1
-        })
-        renderCart(cartItems)
-      })
+         .then(response => {
+            let index = response.data.findIndex(item => item.id === event.target.dataset.id)
+            cartItems.push({
+              id: response.data[index].id,
+              name: response.data[index].name,
+              price: response.data[index].price,
+              quantity: 1
+            })
+            renderCart(cartItems)
+          })
   }else{
-      let index = cartItems.findIndex(item => item.id === event.target.dataset.id)
-      cartItems[index].quantity += 1    
-     renderCart(cartItems)
+    let index = cartItems.findIndex(item => item.id === event.target.dataset.id)
+    cartItems[index].quantity += 1    
+    renderCart(cartItems)
 
   }
 }
 
-  function renderCart(arr){
-    let rawHTML = ''
-    arr.forEach( item => {        
-      rawHTML += `
-        <li class="list-group-item">${item.name} X ${item.quantity} 小計：${item.quantity * item.price}</li>
-    `     
-    })
-    cart.innerHTML = rawHTML
-    renderTotal(cartItems)
-  }
+function renderCart(arr){
+  let rawHTML = ''
+  arr.forEach( item => {        
+    rawHTML += `
+      <li class="list-group-item">${item.name} X ${item.quantity} 小計：${item.quantity * item.price}</li>
+  `     
+  })
+  cart.innerHTML = rawHTML
+  renderTotal(cartItems)
+}
 
 //計算總金額
 submitButton.addEventListener("click", submitButtonClicked);
