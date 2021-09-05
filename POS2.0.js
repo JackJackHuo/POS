@@ -4,13 +4,14 @@ const menu = document.querySelector("#menu");
 const cart = document.querySelector("#cart");
 const totalAmount = document.querySelector("#total-amount");
 const submitButton = document.querySelector("#submit-button");
+const productData = []
 const cartItems = []
 // 菜單資料
 
 axios.get(MENU_URL)
      .then(response => {
-        console.log(response)
-        updateMenu(response.data);
+      productData.push(...response.data)
+      updateMenu(productData);
       })
 // ======= 請從這裡開始 =======
 //更新菜單
@@ -45,24 +46,20 @@ function renderTotal(arr){
 menu.addEventListener("click", addToCart);
 function addToCart(event) {
   if (!event.target.matches('.btn')) return
-  if ( !cartItems.length || !cartItems.some( item => item.id === event.target.dataset.id)){
-    axios.get(MENU_URL)
-         .then(response => {
-            let index = response.data.findIndex(item => item.id === event.target.dataset.id)
-            cartItems.push({
-              id: response.data[index].id,
-              name: response.data[index].name,
-              price: response.data[index].price,
-              quantity: 1
-            })
-            renderCart(cartItems)
-          })
+  const id = event.target.dataset.id
+  const index = productData.findIndex(item => item.id === id)
+  if (!cartItems.some(product => product.id === id)){
+    cartItems.push({
+      id: productData[index].id,
+      name: productData[index].name,
+      price: productData[index].price,
+      quantity: 1
+    })
   }else{
-    let index = cartItems.findIndex(item => item.id === event.target.dataset.id)
-    cartItems[index].quantity += 1    
-    renderCart(cartItems)
-
+    const repeatSelectedItem = cartItems.find(item => item.id === id)
+    repeatSelectedItem.quantity += 1
   }
+  renderCart(cartItems)
 }
 
 function renderCart(arr){
